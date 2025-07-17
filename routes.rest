@@ -1,0 +1,40 @@
+GET https://cse341-project2-t7ar.onrender.com/movies
+
+
+//LOCALHOST 
+### GET all movies
+GET http://localhost:3000/movies
+
+### GET movies by id
+GET http://localhost:3000/movies/6878462676536e99e0e0fce7
+
+### CREATE movie
+POST http://localhost:3000/movies HTTP/1.1
+content-type: application/json
+
+{
+    "title": "The Lord of the Rings: The Fellowship of the Ring",
+    "director": "Peter Jackson",
+    "releaseYear": 2001,
+    "duration": 178,
+    "genre": "Fantasy",
+    "rating": 8.9,
+    "synopsis": "A meek Hobbit from the Shire and eight companions set out on a journey to destroy the powerful One Ring and save Middle-earth from the Dark Lord Sauron."
+}
+
+### PUT movies
+PUT http://localhost:3000/movies/687927a711fa2a77ee183823 HTTP/1.1
+content-type: application/json
+
+{
+    "title": "The Lord of the Rings: The Fellowship of the Ring",
+    "director": "Peter Jackson",
+    "releaseYear": 2001,
+    "duration": 178,
+    "genre": "Fantasy",
+    "rating": 8.9,
+    "synopsis": "A meek Hobbit from the Shire and eight companions set out on a journey to destroy the powerful One Ring."
+}
+
+### DELETE movies
+DELETE http://localhost:3000/movies/687927a711fa2a77ee183823 HTTP/1.1
