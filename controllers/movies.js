@@ -10,7 +10,6 @@ const getAll = async (req, res) => {
     });
 };
 
-
 const getSingle = async (req, res) => {
     //#swagger.tags=['Movies']
     const movieId = new ObjectId(req.params.id);
@@ -20,7 +19,6 @@ const getSingle = async (req, res) => {
         res.status(200).json(movies[0]);
     });   
 };
-
 
 const createMovie = async (req, res) => {
     //#swagger.tags=['Movies']
