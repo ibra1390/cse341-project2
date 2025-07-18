@@ -13,13 +13,13 @@ POST http://localhost:3000/movies HTTP/1.1
 content-type: application/json
 
 {
-    "title": "The Lord of the Rings: The Fellowship of the Ring",
-    "director": "Peter Jackson",
-    "releaseYear": 2001,
-    "duration": 178,
-    "genre": "Fantasy",
-    "rating": 8.9,
-    "synopsis": "A meek Hobbit from the Shire and eight companions set out on a journey to destroy the powerful One Ring and save Middle-earth from the Dark Lord Sauron."
+    "title": "Matrix",
+    "director": 200,
+    "releaseYear": 1999,
+    "duration": 136,
+    "genre": "Action",
+    "rating": "R",
+    "synopsis": "A hacker discovers reality is a simulation."
 }
 
 ### PUT movies
@@ -37,4 +37,37 @@ content-type: application/json
 }
 
 ### DELETE movies
+DELETE http://localhost:3000/movies/687927a711fa2a77ee183823 HTTP/1.1
+
+
+
+### GET all actors
+GET http://localhost:3000/actors
+
+### GET actors by id
+GET http://localhost:3000/movies/6878462676536e99e0e0fce7
+
+### CREATE actor
+POST http://localhost:3000/movies HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Ryan Gosling",
+    "birthdate": "November 12, 1980",
+    "age": "44",
+    "nationality": "Canadian"
+}
+
+### PUT actor
+PUT http://localhost:3000/movies/687927a711fa2a77ee183823 HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Ryan Gosling",
+    "birthdate": "November 12, 1980",
+    "age": "44",
+    "nationality": "Canadian"
+}
+
+### DELETE actor
 DELETE http://localhost:3000/movies/687927a711fa2a77ee183823 HTTP/1.1
