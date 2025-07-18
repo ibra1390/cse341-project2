@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongodb = require('./data/database');
 const app = express();
-
+const errorHandler = require('./helpers/errorHandler');
 const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
@@ -25,3 +25,5 @@ mongodb.initDb((err) => {
         app.listen(port, () => {console.log(`Database is listening and node running on port ${port}`)});
     }
 });
+
+app.use(errorHandler);
