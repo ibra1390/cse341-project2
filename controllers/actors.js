@@ -1,40 +1,47 @@
 const mongodb = require('../data/database');
 const ObjectId = require('mongodb').ObjectId;
 
-const getAll = async (req, res) => {
+const getAll = async (req, res, next) => {
   //#swagger.tags=['Actors']
-  mongodb
-    .getDatabase()
-    .db()
-    .collection('actors')
-    .find()
-    .toArray((err, actors) => {
-      if (err) {
-        return res.status(400).json({ message: err });
-      }
-      res.setHeader('Content-Type', 'application/json');
-      res.status(200).json(actors);
-    });
+  try {
+    const result = await mongodb
+      .getDatabase()
+      .db()
+      .collection('actors')
+      .find()
+      .toArray();
+
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json(result);
+  } catch (err) {
+    next(err);
+  }
 };
 
-const getSingle = async (req, res) => {
+const getSingle = async (req, res, next) => {
   //#swagger.tags=['Actors']
-  if (!ObjectId.isValid(req.params.id)) {
-    return res.status(400).json('Must use a valid actor id to find an actor.');
+  try {
+    if (!ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid actor ID' });
+    }
+
+    const actorId = new ObjectId(req.params.id);
+    const result = await mongodb
+      .getDatabase()
+      .db()
+      .collection('actors')
+      .find({ _id: actorId })
+      .toArray();
+
+    if (result.length === 0) {
+      return res.status(404).json({ message: 'Actor not found' });
+    }
+
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json(result[0]);
+  } catch (err) {
+    next(err);
   }
-  const actorId = new ObjectId(req.params.id);
-  mongodb
-    .getDatabase()
-    .db()
-    .collection('actors')
-    .find({ _id: actorId })
-    .toArray((err, result) => {
-      if (err) {
-        return res.status(400).json({ message: err });
-      }
-      res.setHeader('Content-Type', 'application/json');
-      res.status(200).json(result[0]);
-    });
 };
 
 const createActor = async (req, res) => {

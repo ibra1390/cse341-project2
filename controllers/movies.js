@@ -1,42 +1,49 @@
 const mongodb = require('../data/database');
 const ObjectId = require('mongodb').ObjectId;
 
-const getAll = async (req, res) => {
-    //#swagger.tags=['Movies']
-    mongodb
-    .getDatabase()
-    .db()
-    .collection('movies')
-    .find()
-    .toArray((err, movies) => {
-      if (err) {
-        return res.status(400).json({ message: err });
-      }
-      res.setHeader('Content-Type', 'application/json');
-      res.status(200).json(movies);
-    });
-};
+const getAll = async (req, res, next) => {
+  //#swagger.tags=['Movies']
+  try {
+    const result = await mongodb
+      .getDatabase()
+      .db()
+      .collection('movies')
+      .find()
+      .toArray();
 
-
-const getSingle = async (req, res) => {
-    //#swagger.tags=['Movies']
-    if (!ObjectId.isValid(req.params.id)) {
-    return res.status(400).json('Must use a valid movie id to find a movie.');
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json(result);
+  } catch (err) {
+    next(err); 
   }
-  const movieId = new ObjectId(req.params.id);
-  mongodb
-    .getDatabase()
-    .db()
-    .collection('movies')
-    .find({ _id: movieId })
-    .toArray((err, result) => {
-      if (err) {
-        return res.status(400).json({ message: err });
-      }
-      res.setHeader('Content-Type', 'application/json');
-      res.status(200).json(result[0]);
-    });
 };
+
+const getSingle = async (req, res, next) => {
+  //#swagger.tags=['Movies']
+  try {
+    if (!ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid movie ID' });
+    }
+
+    const movieId = new ObjectId(req.params.id);
+    const result = await mongodb
+      .getDatabase()
+      .db()
+      .collection('movies')
+      .find({ _id: movieId })
+      .toArray();
+
+    if (result.length === 0) {
+      return res.status(404).json({ message: 'Movie not found' });
+    }
+
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json(result[0]);
+  } catch (err) {
+    next(err);
+  }
+};
+
 
 
 const createMovie = async (req, res) => {
