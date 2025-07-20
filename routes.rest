@@ -31,7 +31,7 @@ content-type: application/json
     "director": "Peter Jackson",
     "releaseYear": 2001,
     "duration": 178,
-    "genre": "Fantasyyyy",
+    "genre": "Fantasy",
     "rating": 8.9,
     "synopsis": "A meek Hobbit from the Shire and eight companions set out on a journey to destroy the powerful One Ring."
 }

@@ -44,95 +44,72 @@ const getSingle = async (req, res, next) => {
   }
 };
 
-
-
-const createMovie = async (req, res) => {
-    //#swagger.tags=['Movies']
+const createMovie = async (req, res, next) => {
+  //#swagger.tags=['Movies']
+  try {
     const movie = {
-    title: req.body.title,
-    director: req.body.director,
-    releaseYear: req.body.releaseYear,
-    duration: req.body.duration,
-    genre: req.body.genre,
-    rating: req.body.rating,
-    synopsis: req.body.synopsis
-  };
+      title: req.body.title,
+      director: req.body.director,
+      releaseYear: req.body.releaseYear,
+      duration: req.body.duration,
+      genre: req.body.genre,
+      rating: req.body.rating,
+      synopsis: req.body.synopsis
+    };
 
-  const response = await mongodb
-    .getDatabase()
-    .db()
-    .collection('movies')
-    .insertOne(movie);
+    const response = await mongodb.getDatabase().db().collection('movies').insertOne(movie);
 
-  if (response.acknowledged) {
-    res.status(201).json(response);
-  } else {
-    res
-      .status(500)
-      .json(response.error || 'Some error occurred while creating the movie.');
+    if (response.acknowledged) {
+      res.status(201).json(response);
+    } else {
+      res.status(500).json(response.error || 'Some error occurred while creating the movie.');
+    }
+  } catch (err) {
+    next(err);
   }
 };
 
+const updateMovie = async (req, res, next) => {
+  //#swagger.tags=['Movies']
+  try {
+    const movieId = new ObjectId(req.params.id);
+    const movie = {
+      title: req.body.title,
+      director: req.body.director,
+      releaseYear: req.body.releaseYear,
+      duration: req.body.duration,
+      genre: req.body.genre,
+      rating: req.body.rating,
+      synopsis: req.body.synopsis
+    };
 
-const updateMovie = async (req, res) => {
-    //#swagger.tags=['Movies']
-    if (!ObjectId.isValid(req.params.id)) {
-    return res
-      .status(400)
-      .json('Must use a valid movie id to update a movie.');
-  }
+    const response = await mongodb.getDatabase().db().collection('movies').replaceOne({ _id: movieId }, movie);
 
-  const movieId = new ObjectId(req.params.id);
-  const movie = {
-    title: req.body.title,
-    director: req.body.director,
-    releaseYear: req.body.releaseYear,
-    duration: req.body.duration,
-    genre: req.body.genre,
-    rating: req.body.rating,
-    synopsis: req.body.synopsis
-  };
-
-  const response = await mongodb
-    .getDatabase()
-    .db()
-    .collection('movies')
-    .replaceOne({ _id: movieId }, movie);
-
-  if (response.modifiedCount > 0) {
-    res.status(204).send();
-  } else {
-    res
-      .status(500)
-      .json(response.error || 'Some error occurred while updating the movie.');
+    if (response.modifiedCount > 0) {
+      res.status(204).send();
+    } else {
+      res.status(404).json({ message: 'Movie not found or data unchanged.' });
+    }
+  } catch (err) {
+    next(err);
   }
 };
 
+const deleteMovie = async (req, res, next) => {
+  //#swagger.tags=['Movies']
+  try {
+    const movieId = new ObjectId(req.params.id);
+    const response = await mongodb.getDatabase().db().collection('movies').deleteOne({ _id: movieId });
 
-const deleteMovie = async (req, res) => {
-    //#swagger.tags=['Movies']
-    if (!ObjectId.isValid(req.params.id)) {
-    return res
-      .status(400)
-      .json('Must use a valid movie id to delete a movie.');
-  }
-
-  const movieId = new ObjectId(req.params.id);
-  const response = await mongodb
-    .getDatabase()
-    .db()
-    .collection('movies')
-    .deleteOne({ _id: movieId });
-
-  if (response.deletedCount > 0) {
-    res.status(204).send();
-  } else {
-    res
-      .status(500)
-      .json(response.error || 'Some error occurred while deleting the movie.');
+    if (response.deletedCount > 0) {
+      res.status(204).send();
+    } else {
+      res.status(404).json({ message: 'Movie not found.' });
+    }
+  } catch (err) {
+    next(err);
   }
 };
-
 
 module.exports = {
     getAll,
