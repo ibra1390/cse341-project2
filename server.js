@@ -31,7 +31,7 @@ app
         );
         next();
     })
-    .use(cors({ methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH'] }))
+    .use(cors({ methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH'], origin: '*' }))
     .use('/', require('./routes/index.js'));
 
 passport.use(new GitHubStrategy({
@@ -40,7 +40,6 @@ passport.use(new GitHubStrategy({
     callbackURL: process.env.CALLBACK_URL
 },
 function(accessToken, refreshToken, profile, done) {
-    console.log('GitHub profile received:', profile); // 🔍 <-- Aquí puedes ver todo el objeto del usuario
     return done(null, profile);
 }
 ));
@@ -53,7 +52,6 @@ passport.deserializeUser((user, done) => {
 });
 
 app.get('/', (req, res) => {
-    console.log('Session user:', req.session.user); // 🔍 <-- Aquí verificas qué se guardó en sesión
     const name = req.session.user?.displayName || req.session.user?.username || "Unknown";
     res.send(req.session.user ? `Logged in as ${name}` : "Logged Out");
 });
