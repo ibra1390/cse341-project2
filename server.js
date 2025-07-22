@@ -35,7 +35,7 @@ app
         next();
     })
     .use(cors({ methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']}))
-    .use(cors({ oirgin: '*'}))
+    .use(cors({ origin: '*'}))
     .use('/', require('./routes/index.js'));
 
     passport.use(new GitHubStrategy({
@@ -60,7 +60,7 @@ passport.deserializeUser((user, done) => {
 app.get('/', (req, res) => {res.send(req.session.user !== undefined ? `Logged in as ${req.session.user.displayName}` : "Logged Out")});
 
 app.get('/github/callback', passport.authenticate('github', {
-    failureRedirect: '/api-docs' }),
+    failureRedirect: '/api-docs', session: false}),
     (req, res) => {
     req.session.user = req.user;
     res.redirect('/');
